@@ -45,11 +45,13 @@ type Release struct {
 
 // Repo represents a git repo.
 type Repo struct {
-	Name        string
-	URL         string
-	Description string
-	Stargazers  int
-	LastRelease Release
+	Name          string
+	Owner         string
+	NameWithOwner string
+	URL           string
+	Description   string
+	Stargazers    int
+	LastRelease   Release
 }
 
 // Sponsor represents a sponsor.
@@ -93,6 +95,10 @@ type qlRelease struct {
 }
 
 type qlRepository struct {
+	Name  githubv4.String
+	Owner struct {
+		Login githubv4.String
+	}
 	NameWithOwner githubv4.String
 	URL           githubv4.String
 	Description   githubv4.String
@@ -139,10 +145,12 @@ func releaseFromQL(release qlRelease) Release {
 
 func repoFromQL(repo qlRepository) Repo {
 	return Repo{
-		Name:        string(repo.NameWithOwner),
-		URL:         string(repo.URL),
-		Description: string(repo.Description),
-		Stargazers:  int(repo.Stargazers.TotalCount),
+		Name:          string(repo.Name),
+		Owner:         string(repo.Owner.Login),
+		NameWithOwner: string(repo.NameWithOwner),
+		URL:           string(repo.URL),
+		Description:   string(repo.Description),
+		Stargazers:    int(repo.Stargazers.TotalCount),
 	}
 }
 
